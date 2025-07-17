@@ -1,0 +1,902 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Cuoi len di</title>
+        <link rel="Shortcut Icon" href="https://i.pinimg.com/236x/a5/20/de/a520deb545fea9b62776e6bea5d77928.jpg" type="image/x-icon" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <!--<meta itemprop="image" content="./images/fenxiang.png" />-->
+        <style>
+            html {
+                height: 100%;
+            }
+            body {
+                font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+                background: #79a8ae;
+                color: #CFEBE4;
+                font-size: 18px;
+                line-height: 2;
+                letter-spacing: 1.2px;
+                margin: 0;
+            }
+            a {
+                color: #ebf7f4;
+            }
+            .body--ready {
+                background: -webkit-linear-gradient(top, rgb(203, 235, 219) 0%, rgb(55, 148, 192) 120%);
+                background: -moz-linear-gradient(top, rgb(203, 235, 219) 0%, rgb(55, 148, 192) 120%);
+                background: -o-linear-gradient(top, rgb(203, 235, 219) 0%, rgb(55, 148, 192) 120%);
+                background: -ms-linear-gradient(top, rgb(203, 235, 219) 0%, rgb(55, 148, 192) 120%);
+                background: linear-gradient(top, rgb(203, 235, 219) 0%, rgb(55, 148, 192) 120%);
+            }
+            .text {
+                position: fixed;
+                bottom: 100px;
+                text-align: center;
+                width: 100%;
+            }
+canvas {
+   position: absolute;
+   top: 0;
+   left: 0;
+   z-index: 0;
+}
+
+            img#logo {
+                width: 128px;
+                background-size: cover;
+                border-radius: 200px;
+                box-shadow: 0px 0px 40px rgba(63, 81, 181, 0.72);
+                border: 3px solid #00a0ff;
+                opacity: 1;
+                margin: 0 auto;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                transition: all 1.0s;
+            }
+            #logo:hover {
+                box-shadow: 0 0 10px #fff;
+                -webkit-box-shadow: 0 0 19px #fff;
+                transform: rotate(360deg);
+                -ms-transform: rotate(360deg); /* IE 9 */
+                -moz-transform: rotate(360deg); /* Firefox */
+                -webkit-transform: rotate(360deg); /* Safari 和 Chrome */
+                -o-transform: rotate(360deg); /* Opera */
+                filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+            }
+            .cs {
+                width: 100%;
+                height: 100%;
+                margin: 0 auto;
+                position: absolute;
+                text-align: center;
+            }
+            .canvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+            }
+            .text {
+                position: fixed;
+                bottom: 20px;
+                text-align: center;
+                width: 100%;
+                font-weight: bold;
+            }
+            .text-right {
+                position: fixed;
+                bottom: 50px;
+                text-align: right;
+                width: 100%;
+                font-weight: bold;
+            }
+        </style>
+    
+    </head>
+    
+    <body>
+    <canvas id="rainCanvas"></canvas>
+
+    <script language="javascript">
+        function show_date_time() {
+            window.setTimeout("show_date_time()", 1000);
+            BirthDay = new Date("04/03/2024 08:30:00");
+            today = new Date();
+            timeold = (today.getTime() - BirthDay.getTime());
+            sectimeold = timeold / 1000
+            secondsold = Math.floor(sectimeold);
+            msPerDay = 24 * 60 * 60 * 1000
+            e_daysold = timeold / msPerDay
+            daysold = Math.floor(e_daysold);
+            e_hrsold = (e_daysold - daysold) * 24;
+            hrsold = Math.floor(e_hrsold);
+            e_minsold = (e_hrsold - hrsold) * 60;
+            minsold = Math.floor((e_hrsold - hrsold) * 60);
+            seconds = Math.floor((e_minsold - minsold) * 60);
+            span_dt_dt.innerHTML = daysold + " Ngày " + hrsold + " Giờ " + minsold + " Phút " + seconds + " Giây ";
+        }
+        show_date_time();
+    </script>
+    <script>
+        var S = {
+            init: function () {
+                S.Drawing.init();
+                document.body.classList.add('body--ready');
+                S.UI.simulate("|#countdown 3|Happy Birthday|Thế Sơn|28.07.03|Happy 22+|#heart|#sparkle");
+                S.Drawing.loop(function () {
+                    S.Shape.render();
+                });
+            }
+        };
+        S.Drawing = (function () {
+            var canvas,
+                context,
+                renderFn,
+                requestFrame = window.requestAnimationFrame ||
+                    window.webkitRequestAnimationFrame ||
+                    window.mozRequestAnimationFrame ||
+                    window.oRequestAnimationFrame ||
+                    window.msRequestAnimationFrame ||
+                    function (callback) {
+                        window.setTimeout(callback, 1000 / 60);
+                    };
+            return {
+                init: function (el) {
+                    canvas = document.createElement('canvas');
+                    canvas.className = 'canvas';
+                    document.body.appendChild(canvas);
+                    context = canvas.getContext('2d');
+                    this.adjustCanvas();
+                    window.addEventListener('resize', function (e) {
+                        S.Drawing.adjustCanvas();
+                    });
+                },
+                loop: function (fn) {
+                    renderFn = !renderFn ? fn : renderFn;
+                    this.clearFrame();
+                    renderFn();
+                    requestFrame.call(window, this.loop.bind(this));
+                },
+                adjustCanvas: function () {
+                    canvas.width = window.innerWidth - 100;
+                    canvas.height = window.innerHeight - 30;
+                },
+                clearFrame: function () {
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                },
+                getArea: function () {
+                    return {w: canvas.width, h: canvas.height};
+                },
+                drawCircle: function (p, c) {
+                    context.fillStyle = c.render();
+                    context.beginPath();
+                    context.arc(p.x, p.y, p.z, 0, 2 * Math.PI, true);
+                    context.closePath();
+                    context.fill();
+                }
+            };
+        }());
+        S.UI = (function () {
+            var interval,
+                currentAction,
+                time,
+                maxShapeSize = 30,
+                sequence = [],
+                cmd = '#';
+            function formatTime(date) {
+                var h = date.getHours(),
+                    m = date.getMinutes(),
+                    m = m < 10 ? '0' + m : m;
+                return h + ':' + m;
+            }
+            function getValue(value) {
+                return value && value.split(' ')[1];
+            }
+            function getAction(value) {
+                value = value && value.split(' ')[0];
+                return value && value[0] === cmd && value.substring(1);
+            }
+            function timedAction(fn, delay, max, reverse) {
+                clearInterval(interval);
+                currentAction = reverse ? max : 1;
+                fn(currentAction);
+                if (!max || (!reverse && currentAction < max) || (reverse && currentAction > 0)) {
+                    interval = setInterval(function () {
+                        currentAction = reverse ? currentAction - 1 : currentAction + 1;
+                        fn(currentAction);
+                        if ((!reverse && max && currentAction === max) || (reverse && currentAction === 0)) {
+                            clearInterval(interval);
+                        }
+                    }, delay);
+                }
+            }
+            function performAction(value) {
+                var action,
+                    value,
+                    current;
+                sequence = typeof (value) === 'object' ? value : sequence.concat(value.split('|'));
+                timedAction(function (index) {
+                    current = sequence.shift();
+                    action = getAction(current);
+                    value = getValue(current);
+                    switch (action) {
+                        case 'countdown':
+                            value = parseInt(value) || 10;
+                            value = value > 0 ? value : 10;
+                            timedAction(function (index) {
+                                if (index === 0) {
+                                    if (sequence.length === 0) {
+                                        S.Shape.switchShape(S.ShapeBuilder.letter(''));
+                                    } else {
+                                        performAction(sequence);
+                                    }
+                                } else {
+                                    S.Shape.switchShape(S.ShapeBuilder.letter(index), true);
+                                }
+                            }, 2000, value, true);
+                            break;
+                        case 'rectangle':
+                            value = value && value.split('x');
+                            value = (value && value.length === 2) ? value : [maxShapeSize, maxShapeSize / 2];
+                            S.Shape.switchShape(S.ShapeBuilder.rectangle(Math.min(maxShapeSize, parseInt(value[0])), Math.min(maxShapeSize, parseInt(value[1]))));
+                            break;
+                        case 'circle':
+                            value = parseInt(value) || maxShapeSize;
+                            value = Math.min(value, maxShapeSize);
+                            S.Shape.switchShape(S.ShapeBuilder.circle(value));
+                            break;
+                        case 'heart':
+                            S.Shape.switchShape(S.ShapeBuilder.heart());
+                            break;
+                        case 'sparkle':
+                            S.Shape.switchShape(S.ShapeBuilder.sparkle());
+                            break;
+                        case 'time':
+                            var t = formatTime(new Date());
+                            if (sequence.length > 0) {
+                                S.Shape.switchShape(S.ShapeBuilder.letter(t));
+                            } else {
+                                timedAction(function () {
+                                    t = formatTime(new Date());
+                                    if (t !== time) {
+                                        time = t;
+                                        S.Shape.switchShape(S.ShapeBuilder.letter(time));
+                                    }
+                                }, 1000);
+                            }
+                            break;
+                        default:
+                            S.Shape.switchShape(S.ShapeBuilder.letter(current[0] === cmd ? 'HacPai' : current));
+                            // Mark animation as complete when we reach the last item
+                            if (sequence.length === 0) {
+                                window.textAnimationComplete = true;
+                            }
+                            // Check if current text contains a link - auto redirect after delay
+                            if (current.includes('phamtheson2807.github.io')) {
+                                setTimeout(() => {
+                                    // Auto redirect to the animation page after 3 seconds
+                                    window.location.href = 'https://phamtheson2807.github.io/animation_love/';
+                                }, 3000);
+                            }
+                    }
+                }, 2500, sequence.length);
+            }
+            return {
+                simulate: function (action) {
+                    performAction(action);
+                }
+            };
+        }());
+        S.Point = function (args) {
+            this.x = args.x;
+            this.y = args.y;
+            this.z = args.z;
+            this.a = args.a;
+            this.h = args.h;
+        };
+        S.Color = function (r, g, b, a) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = a;
+        };
+        S.Color.prototype = {
+            render: function () {
+                return 'rgba(' + this.r + ',' + +this.g + ',' + this.b + ',' + this.a + ')';
+            }
+        };
+        S.Dot = function (x, y) {
+            this.p = new S.Point({
+                x: x,
+                y: y,
+                z: 5,
+                a: 1,
+                h: 0
+            });
+            this.e = 0.07;
+            this.s = true;
+            this.c = new S.Color(255, 255, 255, this.p.a);
+            this.t = this.clone();
+            this.q = [];
+        };
+        S.Dot.prototype = {
+            clone: function () {
+                return new S.Point({
+                    x: this.x,
+                    y: this.y,
+                    z: this.z,
+                    a: this.a,
+                    h: this.h
+                });
+            },
+            _draw: function () {
+                this.c.a = this.p.a;
+                S.Drawing.drawCircle(this.p, this.c);
+            },
+            _moveTowards: function (n) {
+                var details = this.distanceTo(n, true),
+                    dx = details[0],
+                    dy = details[1],
+                    d = details[2],
+                    e = this.e * d;
+                if (this.p.h === -1) {
+                    this.p.x = n.x;
+                    this.p.y = n.y;
+                    return true;
+                }
+                if (d > 1) {
+                    this.p.x -= ((dx / d) * e);
+                    this.p.y -= ((dy / d) * e);
+                } else {
+                    if (this.p.h > 0) {
+                        this.p.h--;
+                    } else {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            _update: function () {
+                if (this._moveTowards(this.t)) {
+                    var p = this.q.shift();
+                    if (p) {
+                        this.t.x = p.x || this.p.x;
+                        this.t.y = p.y || this.p.y;
+                        this.t.z = p.z || this.p.z;
+                        this.t.a = p.a || this.p.a;
+                        this.p.h = p.h || 0;
+                    } else {
+                        if (this.s) {
+                            this.p.x -= Math.sin(Math.random() * 3.142);
+                            this.p.y -= Math.sin(Math.random() * 3.142);
+                        } else {
+                            this.move(new S.Point({
+                                x: this.p.x + (Math.random() * 50) - 25,
+                                y: this.p.y + (Math.random() * 50) - 25
+                            }));
+                        }
+                    }
+                }
+                d = this.p.a - this.t.a;
+                this.p.a = Math.max(0.1, this.p.a - (d * 0.05));
+                d = this.p.z - this.t.z;
+                this.p.z = Math.max(1, this.p.z - (d * 0.05));
+            },
+            distanceTo: function (n, details) {
+                var dx = this.p.x - n.x,
+                    dy = this.p.y - n.y,
+                    d = Math.sqrt(dx * dx + dy * dy);
+                return details ? [dx, dy, d] : d;
+            },
+            move: function (p, avoidStatic) {
+                if (!avoidStatic || (avoidStatic && this.distanceTo(p) > 1)) {
+                    this.q.push(p);
+                }
+            },
+            render: function () {
+                this._update();
+                this._draw();
+            }
+        };
+        S.ShapeBuilder = (function () {
+            var gap = 8,
+                shapeCanvas = document.createElement('canvas'),
+                shapeContext = shapeCanvas.getContext('2d'),
+                fontSize = 200,
+                fontFamily = 'Avenir, Helvetica Neue, Helvetica, Arial, sans-serif';
+            function fit() {
+                shapeCanvas.width = Math.floor(window.innerWidth / gap) * gap;
+                shapeCanvas.height = Math.floor(window.innerHeight / gap) * gap;
+                shapeContext.fillStyle = 'red';
+                shapeContext.textBaseline = 'middle';
+                shapeContext.textAlign = 'center';
+            }
+            function processCanvas() {
+                var pixels = shapeContext.getImageData(0, 0, shapeCanvas.width, shapeCanvas.height).data;
+                dots = [],
+                    pixels,
+                    x = 0,
+                    y = 0,
+                    fx = shapeCanvas.width,
+                    fy = shapeCanvas.height,
+                    w = 0,
+                    h = 0;
+                for (var p = 0; p < pixels.length; p += (4 * gap)) {
+                    if (pixels[p + 3] > 0) {
+                        dots.push(new S.Point({
+                            x: x,
+                            y: y
+                        }));
+                        w = x > w ? x : w;
+                        h = y > h ? y : h;
+                        fx = x < fx ? x : fx;
+                        fy = y < fy ? y : fy;
+                    }
+                    x += gap;
+                    if (x >= shapeCanvas.width) {
+                        x = 0;
+                        y += gap;
+                        p += gap * 4 * shapeCanvas.width;
+                    }
+                }
+                return {dots: dots, w: w + fx, h: h + fy};
+            }
+            function setFontSize(s) {
+                shapeContext.font = 'bold ' + s + 'px ' + fontFamily;
+            }
+            function isNumber(n) {
+                return !isNaN(parseFloat(n)) && isFinite(n);
+            }
+            function init() {
+                fit();
+                window.addEventListener('resize', fit);
+            }
+            // Init
+            init();
+            return {
+                imageFile: function (url, callback) {
+                    var image = new Image(),
+                        a = S.Drawing.getArea();
+                    image.onload = function () {
+                        shapeContext.clearRect(0, 0, shapeCanvas.width, shapeCanvas.height);
+                        shapeContext.drawImage(this, 0, 0, a.h * 0.6, a.h * 0.6);
+                        callback(processCanvas());
+                    };
+                    image.onerror = function () {
+                        callback(S.ShapeBuilder.letter('What?'));
+                    };
+                    image.src = url;
+                },
+                circle: function (d) {
+                    var r = Math.max(0, d) / 2;
+                    shapeContext.clearRect(0, 0, shapeCanvas.width, shapeCanvas.height);
+                    shapeContext.beginPath();
+                    shapeContext.arc(r * gap, r * gap, r * gap, 0, 2 * Math.PI, false);
+                    shapeContext.fill();
+                    shapeContext.closePath();
+                    return processCanvas();
+                },
+                letter: function (l) {
+                    var s = 0;
+                    setFontSize(fontSize);
+                    s = Math.min(fontSize,
+                        (shapeCanvas.width / shapeContext.measureText(l).width) * 0.8 * fontSize,
+                        (shapeCanvas.height / fontSize) * (isNumber(l) ? 1 : 0.45) * fontSize);
+                    setFontSize(s);
+                    shapeContext.clearRect(0, 0, shapeCanvas.width, shapeCanvas.height);
+                    shapeContext.fillText(l, shapeCanvas.width / 2, shapeCanvas.height / 2);
+                    return processCanvas();
+                },
+                heart: function () {
+                    var dots = [];
+                    // Tạo hình trái tim đẹp hơn với nhiều điểm hơn
+                    for (var t = 0; t <= 2 * Math.PI; t += 0.05) {
+                        var x = 16 * Math.pow(Math.sin(t), 3);
+                        var y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                        dots.push(new S.Point({
+                            x: (x + 25) * gap,
+                            y: (y + 20) * gap
+                        }));
+                        
+                        // Thêm điểm để làm trái tim dày hơn
+                        if (t % 0.2 < 0.05) {
+                            dots.push(new S.Point({
+                                x: (x + 25 + (Math.random() - 0.5) * 2) * gap,
+                                y: (y + 20 + (Math.random() - 0.5) * 2) * gap
+                            }));
+                        }
+                    }
+                    
+                    // Thêm các điểm lấp lánh xung quanh trái tim
+                    for (var i = 0; i < 20; i++) {
+                        var angle = (Math.random() * 2 * Math.PI);
+                        var radius = 30 + Math.random() * 10;
+                        var sparkleX = 25 + radius * Math.cos(angle);
+                        var sparkleY = 20 + radius * Math.sin(angle);
+                        dots.push(new S.Point({
+                            x: sparkleX * gap,
+                            y: sparkleY * gap
+                        }));
+                    }
+                    
+                    return {dots: dots, w: 50 * gap, h: 40 * gap};
+                },
+                sparkle: function () {
+                    var dots = [];
+                    // Tạo hiệu ứng sparkle đẹp hơn với pattern hình sao
+                    var centerX = 20, centerY = 20;
+                    
+                    // Tạo hình sao chính ở giữa
+                    for (var i = 0; i < 12; i++) {
+                        var angle = (i * Math.PI * 2) / 12;
+                        var outerRadius = 15;
+                        var innerRadius = 8;
+                        
+                        // Điểm ngoài của hình sao
+                        var outerX = centerX + outerRadius * Math.cos(angle);
+                        var outerY = centerY + outerRadius * Math.sin(angle);
+                        dots.push(new S.Point({
+                            x: outerX * gap,
+                            y: outerY * gap
+                        }));
+                        
+                        // Điểm trong của hình sao
+                        var innerAngle = angle + Math.PI / 12;
+                        var innerX = centerX + innerRadius * Math.cos(innerAngle);
+                        var innerY = centerY + innerRadius * Math.sin(innerAngle);
+                        dots.push(new S.Point({
+                            x: innerX * gap,
+                            y: innerY * gap
+                        }));
+                    }
+                    
+                    // Thêm các ngôi sao nhỏ xung quanh
+                    for (var j = 0; j < 30; j++) {
+                        var randomAngle = Math.random() * 2 * Math.PI;
+                        var randomRadius = 20 + Math.random() * 15;
+                        var sparkleX = centerX + randomRadius * Math.cos(randomAngle);
+                        var sparkleY = centerY + randomRadius * Math.sin(randomAngle);
+                        
+                        dots.push(new S.Point({
+                            x: sparkleX * gap,
+                            y: sparkleY * gap
+                        }));
+                        
+                        // Thêm hiệu ứng lấp lánh nhỏ
+                        if (Math.random() > 0.7) {
+                            dots.push(new S.Point({
+                                x: (sparkleX + (Math.random() - 0.5) * 3) * gap,
+                                y: (sparkleY + (Math.random() - 0.5) * 3) * gap
+                            }));
+                        }
+                    }
+                    
+                    return {dots: dots, w: 40 * gap, h: 40 * gap};
+                },
+                rectangle: function (w, h) {
+                    var dots = [],
+                        width = gap * w,
+                        height = gap * h;
+                    for (var y = 0; y < height; y += gap) {
+                        for (var x = 0; x < width; x += gap) {
+                            dots.push(new S.Point({
+                                x: x,
+                                y: y
+                            }));
+                        }
+                    }
+                    return {dots: dots, w: width, h: height};
+                }
+            };
+        }());
+        S.Shape = (function () {
+            var dots = [],
+                width = 0,
+                height = 0,
+                cx = 0,
+                cy = 0;
+            function compensate() {
+                var a = S.Drawing.getArea();
+                cx = a.w / 2 - width / 2;
+                cy = a.h / 2 - height / 2;
+            }
+            return {
+                shuffleIdle: function () {
+                    var a = S.Drawing.getArea();
+                    for (var d = 0; d < dots.length; d++) {
+                        if (!dots[d].s) {
+                            dots[d].move({
+                                x: Math.random() * a.w,
+                                y: Math.random() * a.h
+                            });
+                        }
+                    }
+                },
+                switchShape: function (n, fast) {
+                    var size,
+                        a = S.Drawing.getArea();
+                    width = n.w;
+                    height = n.h;
+                    compensate();
+                    if (n.dots.length > dots.length) {
+                        size = n.dots.length - dots.length;
+                        for (var d = 1; d <= size; d++) {
+                            dots.push(new S.Dot(a.w / 2, a.h / 2));
+                        }
+                    }
+                    var d = 0,
+                        i = 0;
+                    while (n.dots.length > 0) {
+                        i = Math.floor(Math.random() * n.dots.length);
+                        dots[d].e = fast ? 0.25 : (dots[d].s ? 0.14 : 0.11);
+                        if (dots[d].s) {
+                            dots[d].move(new S.Point({
+                                z: Math.random() * 20 + 10,
+                                a: Math.random(),
+                                h: 18
+                            }));
+                        } else {
+                            dots[d].move(new S.Point({
+                                z: Math.random() * 5 + 5,
+                                h: fast ? 18 : 30
+                            }));
+                        }
+                        dots[d].s = true;
+                        dots[d].move(new S.Point({
+                            x: n.dots[i].x + cx,
+                            y: n.dots[i].y + cy,
+                            a: 1,
+                            z: 5,
+                            h: 0
+                        }));
+                        n.dots = n.dots.slice(0, i).concat(n.dots.slice(i + 1));
+                        d++;
+                    }
+                    for (var i = d; i < dots.length; i++) {
+                        if (dots[i].s) {
+                            dots[i].move(new S.Point({
+                                z: Math.random() * 20 + 10,
+                                a: Math.random(),
+                                h: 20
+                            }));
+                            dots[i].s = false;
+                            dots[i].e = 0.04;
+                            dots[i].move(new S.Point({
+                                x: Math.random() * a.w,
+                                y: Math.random() * a.h,
+                                a: 0.3, //.4
+                                z: Math.random() * 4,
+                                h: 0
+                            }));
+                        }
+                    }
+                },
+                render: function () {
+                    for (var d = 0; d < dots.length; d++) {
+                        dots[d].render();
+                    }
+                }
+            };
+        }());
+        S.init();
+    </script>
+
+    <script>
+        // Auto redirect functionality - no manual click needed
+    </script>
+ <script>
+        const canvas = document.getElementById('rainCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const letters = 'HAPPY BIRTHDAY '.split('');
+        const fontSize = 16;
+        let columns = Math.floor(window.innerWidth / fontSize);
+        const drops = Array(columns).fill(1);
+
+        function drawRainBackground() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#8A2BE2';
+            ctx.font = fontSize + 'px arial';
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height || Math.random() > 0.95) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawRainBackground, 50);
+</script>
+
+<script>
+try {
+    const audio = new Audio("./Ly.mp3");
+    function handleClick() {
+        audio.play().catch(function(error) {
+            console.log("Audio playback failed:", error);
+        });
+        window.removeEventListener('click', handleClick);
+    }
+    window.addEventListener('click', handleClick);
+} catch (error) {
+    console.log("Audio setup failed:", error);
+}
+</script>
+
+<!-- Heart Animation Effect -->
+<canvas class="webgl-heart"></canvas>
+<style>
+    .webgl-heart {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        outline: none;
+        z-index: 2;
+        pointer-events: none;
+    }
+</style>
+
+<script>
+    class HeartEffect {
+        constructor() {
+            this.canvas = document.querySelector('.webgl-heart');
+            this.ctx = this.canvas.getContext('2d');
+            this.particles = [];
+            this.time = 0;
+            
+            this.resizeCanvas();
+            window.addEventListener('resize', () => this.resizeCanvas());
+            
+            this.createHeartParticles();
+            
+            // Check if text animation is complete and start heart effect
+            this.checkAndStartAnimation();
+        }
+        
+        checkAndStartAnimation() {
+            // Do not auto-start heart animation
+            // Heart effect will only start when user clicks the link
+        }
+        
+        resizeCanvas() {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+            this.centerX = this.canvas.width / 2;
+            this.centerY = this.canvas.height / 2;
+        }
+        
+        createHeartParticles() {
+            const colors = ['#ff66cc', '#ff99ff', '#ffccff', '#ff3366', '#ffffff', '#8A2BE2', '#9966ff'];
+            
+            for (let i = 0; i < 800; i++) {
+                this.particles.push({
+                    t: Math.random() * Math.PI * 2,
+                    speed: 0.002 + Math.random() * 0.008,
+                    size: 2 + Math.random() * 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    opacity: 0.5 + Math.random() * 0.5,
+                    offset: Math.random() * 100,
+                    sparkle: Math.random() > 0.8
+                });
+            }
+        }
+        
+        drawHeart(t, scale = 1) {
+            const x = scale * 16 * Math.pow(Math.sin(t), 3);
+            const y = scale * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+            return [x, -y];
+        }
+        
+        startAnimation() {
+            this.isAnimating = true;
+            this.animate();
+        }
+        
+        animate() {
+            if (!this.isAnimating) return;
+            
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            this.time += 0.01;
+            
+            this.particles.forEach(particle => {
+                particle.t += particle.speed;
+                
+                // Main heart shape
+                const [x, y] = this.drawHeart(particle.t, 3);
+                const finalX = this.centerX + x;
+                const finalY = this.centerY + y;
+                
+                // Add some random movement for sparkle effect
+                const sparkleX = finalX + Math.sin(this.time + particle.offset) * 20;
+                const sparkleY = finalY + Math.cos(this.time + particle.offset) * 15;
+                
+                // Draw particle
+                this.ctx.save();
+                this.ctx.globalAlpha = particle.opacity * (0.5 + 0.5 * Math.sin(this.time + particle.offset));
+                this.ctx.fillStyle = particle.color;
+                this.ctx.beginPath();
+                
+                if (particle.sparkle) {
+                    // Draw sparkle as star
+                    this.drawStar(sparkleX, sparkleY, particle.size);
+                } else {
+                    // Draw regular particle
+                    this.ctx.arc(finalX, finalY, particle.size, 0, Math.PI * 2);
+                }
+                
+                this.ctx.fill();
+                this.ctx.restore();
+                
+                // Reset particle if it completes the heart shape
+                if (particle.t > Math.PI * 2) {
+                    particle.t = 0;
+                }
+            });
+            
+            // Add floating hearts around
+            for (let i = 0; i < 5; i++) {
+                const angle = this.time + i * Math.PI * 0.4;
+                const radius = 100 + Math.sin(this.time * 0.5) * 30;
+                const x = this.centerX + Math.cos(angle) * radius;
+                const y = this.centerY + Math.sin(angle) * radius;
+                
+                this.ctx.save();
+                this.ctx.globalAlpha = 0.3 + 0.2 * Math.sin(this.time + i);
+                this.ctx.fillStyle = '#ff66cc';
+                this.drawSmallHeart(x, y, 0.5);
+                this.ctx.restore();
+            }
+            
+            requestAnimationFrame(() => this.animate());
+        }
+        
+        drawStar(x, y, size) {
+            const spikes = 5;
+            const outerRadius = size;
+            const innerRadius = size * 0.5;
+            
+            this.ctx.beginPath();
+            for (let i = 0; i < spikes * 2; i++) {
+                const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                const angle = (i * Math.PI) / spikes;
+                const px = x + Math.cos(angle) * radius;
+                const py = y + Math.sin(angle) * radius;
+                
+                if (i === 0) {
+                    this.ctx.moveTo(px, py);
+                } else {
+                    this.ctx.lineTo(px, py);
+                }
+            }
+            this.ctx.closePath();
+        }
+        
+        drawSmallHeart(x, y, scale) {
+            for (let t = 0; t <= Math.PI * 2; t += 0.3) {
+                const [hx, hy] = this.drawHeart(t, scale);
+                this.ctx.beginPath();
+                this.ctx.arc(x + hx, y + hy, 1, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+        }
+    }
+    
+    // Initialize heart effect
+    window.heartEffect = new HeartEffect();
+</script>
+
+</body>
+</html>
