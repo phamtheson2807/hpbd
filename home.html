@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Happy Birthday</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            font-family: Arial, sans-serif;
+        }
+
+        body.body--ready {
+            color: #fff;
+        }
+
+        img#logo {
+            width: 128px;
+            background-size: cover;
+            border-radius: 200px;
+            box-shadow: 0px 0px 40px rgba(63, 81, 181, 0.72);
+            border: 3px solid #00a0ff;
+            opacity: 1;
+            margin: 0 auto;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            transition: all 1.0s;
+        }
+        
+        #logo:hover {
+            box-shadow: 0 0 10px #fff;
+            -webkit-box-shadow: 0 0 19px #fff;
+            transform: rotate(360deg);
+            -ms-transform: rotate(360deg);
+            -moz-transform: rotate(360deg);
+            -webkit-transform: rotate(360deg);
+            -o-transform: rotate(360deg);
+            filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+        }
+        
+        .cs {
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            position: absolute;
+            text-align: center;
+        }
+        
+        .canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .text {
+            position: fixed;
+            bottom: 20px;
+            text-align: center;
+            width: 100%;
+            font-weight: bold;
+        }
+        
+        .text-right {
+            position: fixed;
+            bottom: 50px;
+            text-align: right;
+            width: 100%;
+            font-weight: bold;
+        }
+        
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 10px 15px;
+            color: white;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .music-control:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .music-control.playing {
+            display: flex;
+        }
+        
+        .tap-instruction {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 18px;
+            text-align: center;
+            z-index: 1001;
+            animation: pulse 2s infinite;
+            display: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 0%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        @keyframes snowfall {
+            0% { 
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes sparkleAnimation {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(1.5) rotate(180deg);
+                opacity: 0.5;
+            }
+        }
+
+        .snowflakes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .snowflake {
+            position: absolute;
+            color: rgba(255, 105, 180, 0.8);
+            font-size: 1em;
+            animation: snowfall linear infinite;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .box {
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .heart-text {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #FF1493;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 6;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(255,20,147,0.5);
+            font-family: Arial, sans-serif;
+            max-width: 300px;
+            line-height: 1.4;
+            transition: opacity 0.5s ease-in-out;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="rainCanvas"></canvas>
+    
+    <!-- Audio Element -->
+    <audio id="backgroundMusic" loop preload="auto"></audio>
+    
+    <!-- Music Control -->
+    <div class="music-control" id="musicControl">
+        <i class="fas fa-music"></i>
+        <span id="musicStatus">Nhạc đang phát</span>
+    </div>
+    
+    <!-- Tap Instruction -->
+    <div class="tap-instruction" id="tapInstruction">
+        <i class="fas fa-hand-pointer"></i><br>
+        Chạm vào màn hình để phát nhạc
+    </div>
+    
+    <!-- Floating Elements -->
+    <div class="snowflakes" id="snowflakes"></div>
+
+    <script language="javascript">
+        // Get data from localStorage or URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const shortId = urlParams.get('id');
+        
+        let customData;
+        
+        if (shortId) {
+            const storedData = localStorage.getItem(`birthday_${shortId}`);
+            console.log('ShortId:', shortId);
+            console.log('Stored data:', storedData);
+            if (storedData) {
+                const parsedData = JSON.parse(storedData);
+                console.log('Parsed data:', parsedData);
+                customData = {
+                    name: parsedData.name || 'Sơn 🌷',
+                    age: parsedData.age || '22',
+                    date: parsedData.date || '28.07.03',
+                    title: parsedData.title || 'Chúc mừng sinh nhật',
+                    wishes: parsedData.wishes || [],
+                    music: parsedData.music || null
+                };
+                console.log('Final customData:', customData);
+            } else {
+                console.log('No stored data found for shortId:', shortId);
+                customData = {
+                    name: 'Sơn 🌷',
+                    age: '22',
+                    date: '28.07.03',
+                    title: 'Chúc mừng sinh nhật',
+                    wishes: [],
+                    music: null
+                };
+            }
+        } else {
+            customData = {
+                name: urlParams.get('name') || 'Sơn 🌷',
+                age: urlParams.get('age') || '22',
+                date: urlParams.get('date') || '28.07.03',
+                title: urlParams.get('title') || 'Chúc mừng sinh nhật',
+                wishes: urlParams.get('wishes') ? JSON.parse(urlParams.get('wishes')) : [],
+                music: null
+            };
+        }
+
+        document.title = customData.title;
+
+        function show_date_time() {
+            window.setTimeout("show_date_time()", 1000);
+            BirthDay = new Date("04/03/2024 08:30:00");
+            today = new Date();
+            timeold = (today.getTime() - BirthDay.getTime());
+            sectimeold = timeold / 1000
+            secondsold = Math.floor(sectimeold);
+            msPerDay = 24 * 60 * 60 * 1000
+            e_daysold = timeold / msPerDay
+            daysold = Math.floor(e_daysold);d = Math.floor(e_daysold);
+            e_hrsold = (e_daysold - daysold) * 24;
+            hrsold = Math.floor(e_hrsold);
+            e_minsold = (e_hrsold - hrsold) * 60;
+            minsold = Math.floor((e_hrsold - hrsold) * 60);
+            seconds = Math.floor((e_minsold - minsold) * 60);
+            if (document.getElementById('span_dt_dt')) {
+                document.getElementById('span_dt_dt').innerHTML = daysold + " Ngày " + hrsold + " Giờ " + minsold + " Phút " + seconds + " Giây ";
+            }
+        }
+        show_date_time();
+    </script>
+    
+    <script>
+        var S = {
+            init: function () {
+                S.Drawing.init();
+                document.body.classList.add('body--ready');
+                
+                let sequence = `|#countdown 3|HAPPY BIRTHDAY|${customData.name.toUpperCase()}|${customData.date}|HAPPY ${customData.age}+`;
+                
+                customData.wishes.forEach(wish => {
+                    sequence += `|${wish}`;
+                });
+                
+                S.UI.simulate(sequence);
+                S.Drawing.loop(function () {
+                    S.Shape.render();
+                });
+            }
+        };
+        
+        S.Drawing = (function () {
+            var canvas,
+                context,
+                renderFn,
+                requestFrame = window.requestAnimationFrame ||
+                    window.webkitRequestAnimationFrame ||
+                    window.mozRequestAnimationFrame ||
+                    window.oRequestAnimationFrame ||
+                    window.msRequestAnimationFrame ||
+                    function (callback) {
+                        window.setTimeout(callback, 1000 / 60);
+                    };
+            return {
+                init: function (el) {
+                    canvas = document.createElement('canvas');
+                    canvas.className = 'canvas';
+                    document.body.appendChild(canvas);
+                    context = canvas.getContext('2d');
+                    this.adjustCanvas();
+                    window.addEventListener('resize', function (e) {
+                        S.Drawing.adjustCanvas();
+                    });
+                },
+                loop: function (fn) {
+                    renderFn = !renderFn ? fn : renderFn;
+                    this.clearFrame();
+                    renderFn();
+                    requestFrame.call(window, this.loop.bind(this));
+                },
+                adjustCanvas: function () {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                },
+                clearFrame: function () {
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                },
+                getArea: function () {
+                    return {w: canvas.width, h: canvas.height};
+                },
+                getContext: function () {
+                    return context;
+                },
+                drawCircle: function (p, c) {
+                    context.fillStyle = c.render();
+                    context.beginPath();
+                    context.arc(p.x, p.y, p.z, 0, 2 * Math.PI, true);
+                    context.closePath();
+                    context.fill();
+                }
+            };
+        }());
+        
+        S.UI = (function () {
+            var interval,
+                currentAction,
+                time,
+                maxShapeSize = 30,
+                sequence = [],
+                cmd = '#',
+                isSequenceComplete = false;
+            function formatTime(date) {
+                var h = date.getHours(),
+                    m = date.getMinutes(),
+                    m = m < 10 ? '0' + m : m;
+                return h + ':' + m;
+            }
+            function getValue(value) {
+                return value && value.split(' ')[1];
+            }
+            function getAction(value) {
+                value = value && value.split(' ')[0];
+                return value && value[0] === cmd && value.substring(1);
+            }
+            function timedAction(fn, delay, max, reverse) {
+                clearInterval(interval);
+                currentAction = reverse ? max : 1;
+                fn(currentAction);
+                if (!max || (!reverse && currentAction < max) || (reverse && currentAction > 0)) {
+                    interval = setInterval(function () {
+                        currentAction = reverse ? currentAction - 1 : currentAction + 1;
+                        fn(currentAction);
+                        if ((!reverse && max && currentAction === max) || (reverse && currentAction === 0)) {
+                            clearInterval(interval);
+                            // Check if sequence is complete
+                            if (sequence.length === 0 && !isSequenceComplete) {
+                                isSequenceComplete = true;
+                                setTimeout(function() {
+                                    S.Shape.scatterDots();
+                                    setTimeout(function() {
+                                        startHeartAnimation();
+                                    }, 1500);
+                                }, 2000);
+                            }
+                        }
+                    }, delay);
+                }
+            }
+            function performAction(value) {
+                var action,
+                    value,
+                    current;
+                sequence = typeof (value) === 'object' ? value : sequence.concat(value.split('|'));
+                timedAction(function (index) {
+                    current = sequence.shift();
+                    action = getAction(current);
+                    value = getValue(current);
+                    switch (action) {
+                        case 'countdown':
+                            value = parseInt(value) || 10;
+                            value = value > 0 ? value : 10;
+                            timedAction(function (index) {
+                                if (index === 0) {
+                                    if (sequence.length === 0) {
+                                        S.Shape.switchShape(S.ShapeBuilder.letter(''));
+                                    } else {
+                                        performAction(sequence);
+                                    }
+                                } else {
+                                    S.Shape.switchShape(S.ShapeBuilder.letter(index), true);
+                                }
+                            }, 2000, value, true);
+                            break;
+                        case 'rectangle':
+                            value = value && value.split('x');
+                            value = (value && value.length === 2) ? value : [maxShapeSize, maxShapeSize / 2];
+                            S.Shape.switchShape(S.ShapeBuilder.rectangle(Math.min(maxShapeSize, parseInt(value[0])), Math.min(maxShapeSize, parseInt(value[1]))));
+                            break;
+                        case 'circle':
+                            value = parseInt(value) || maxShapeSize;
+                            value = Math.min(value, maxShapeSize);
+                            S.Shape.switchShape(S.ShapeBuilder.circle(value));
+                            break;
+                        case 'wishes':
+                            S.Shape.switchShape(S.ShapeBuilder.letter(current, true));
+                            break;
+                        case 'time':
+                            var t = formatTime(new Date());
+                            if (sequence.length > 0) {
+                                S.Shape.switchShape(S.ShapeBuilder.letter(t));
+                            } else {
+                                timedAction(function () {
+                                    t = formatTime(new Date());
+                                    if (t !== time) {
+                                        time = t;
+                                        S.Shape.switchShape(S.ShapeBuilder.letter(time));
+                                    }
+                                }, 1000);
+                            }
+                            break;
+                        default:
+                            S.Shape.switchShape(S.ShapeBuilder.letter(current[0] === cmd ? 'HacPai' : current));
+                    }
+                }, 3500, sequence.length);
+                
+                // Check if this was the last item and trigger final animation
+                setTimeout(function() {
+                    if (sequence.length === 0 && !isSequenceComplete) {
+                        isSequenceComplete = true;
+                        setTimeout(function() {
+                            S.Shape.scatterDots();
+                            setTimeout(function() {
+                                startHeartAnimation();
+                            }, 1500); // Shorter delay for heart animation
+                        }, 2000); // Shorter delay before scattering
+                    }
+                }, 3500 * sequence.length + 2000); // Reduced delay
+            }
+            return {
+                simulate: function (action) {
+                    performAction(action);
+                }
+            };
+        }());
+        
+        // Heart Animation Functions
+        function startHeartAnimation() {
+            // Create heart canvas
+            const heartCanvas = document.createElement('canvas');
+            heartCanvas.id = 'heartCanvas';
+            heartCanvas.style.position = 'fixed';
+            heartCanvas.style.top = '0';
+            heartCanvas.style.left = '0';
+            heartCanvas.style.width = '100%';
+            heartCanvas.style.height = '100%';
+            heartCanvas.style.zIndex = '5';
+            heartCanvas.style.pointerEvents = 'none';
+            document.body.appendChild(heartCanvas);
+            
+            // Create text overlay for wishes
+            const wishText = document.createElement('div');
+            wishText.style.position = 'fixed';
+            wishText.style.top = '50%';
+            wishText.style.left = '50%';
+            wishText.style.transform = 'translate(-50%, -50%)';
+            wishText.style.color = '#FF1493';
+            wishText.style.fontSize = '24px';
+            wishText.style.fontWeight = 'bold';
+            wishText.style.textAlign = 'center';
+            wishText.style.zIndex = '6';
+            wishText.style.textShadow = '2px 2px 4px rgba(0,0,0,0.8)';
+            wishText.style.fontFamily = 'Arial, sans-serif';
+            wishText.style.maxWidth = '300px';
+            wishText.style.lineHeight = '1.4';
+            document.body.appendChild(wishText);
+            
+            const context = heartCanvas.getContext('2d');
+            const particles = new ParticlePool(1500);
+            const particleRate = 1500 / 2;
+            let time;
+            
+            // Use birthday wishes from customData
+            const wishes = customData.wishes && customData.wishes.length > 0 ? customData.wishes : [
+                "Hãy thêm lời chúc từ trang tạo!"
+            ];
+            
+            let currentWishIndex = 0;
+            
+            // Change wish text every 3 seconds
+            function updateWishText() {
+                wishText.style.opacity = '0';
+                setTimeout(() => {
+                    wishText.innerHTML = wishes[currentWishIndex];
+                    wishText.style.opacity = '1';
+                    currentWishIndex = (currentWishIndex + 1) % wishes.length;
+                }, 300);
+            }
+            
+            wishText.style.transition = 'opacity 0.3s ease-in-out';
+            updateWishText();
+            setInterval(updateWishText, 3000);
+            
+            function pointOnHeart(t) {
+                return {
+                    x: 160 * Math.pow(Math.sin(t), 3),
+                    y: 130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
+                };
+            }
+            
+            const image = createHeartImage();
+            
+            function onResize() {
+                heartCanvas.width = window.innerWidth;
+                heartCanvas.height = window.innerHeight;
+            }
+            
+            function render() {
+                requestAnimationFrame(render);
+                
+                const newTime = new Date().getTime() / 1000;
+                const deltaTime = newTime - (time || newTime);
+                time = newTime;
+                
+                context.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
+                
+                const amount = particleRate * deltaTime;
+                for (let i = 0; i < amount; i++) {
+                    const pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
+                    const dir = normalizePoint(pos, 80);
+                    particles.add(heartCanvas.width / 2 + pos.x, heartCanvas.height / 2 - pos.y, dir.x, -dir.y);
+                }
+                
+                particles.update(deltaTime);
+                particles.draw(context, image);
+            }
+            
+            window.addEventListener('resize', onResize);
+            onResize();
+            render();
+        }
+        
+        function createHeartImage() {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 13;
+            canvas.height = 13;
+            
+            function to(t) {
+                const point = {
+                    x: 160 * Math.pow(Math.sin(t), 3),
+                    y: 130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
+                };
+                point.x = 13 / 2 + point.x * 13 / 350;
+                point.y = 13 / 2 - point.y * 13 / 350;
+                return point;
+            }
+            
+            context.beginPath();
+            let t = -Math.PI;
+            let point = to(t);
+            context.moveTo(point.x, point.y);
+            while (t < Math.PI) {
+                t += 0.01;
+                point = to(t);
+                context.lineTo(point.x, point.y);
+            }
+            context.closePath();
+            context.fillStyle = '#FF5CA4';
+            context.fill();
+            
+            const image = new Image();
+            image.src = canvas.toDataURL();
+            return image;
+        }
+        
+        function normalizePoint(point, length) {
+            const currentLength = Math.sqrt(point.x * point.x + point.y * point.y);
+            return {
+                x: (point.x / currentLength) * length,
+                y: (point.y / currentLength) * length
+            };
+        }
+        
+        // Particle classes for heart animation
+        function Particle() {
+            this.position = {x: 0, y: 0};
+            this.velocity = {x: 0, y: 0};
+            this.acceleration = {x: 0, y: 0};
+            this.age = 0;
+        }
+        
+        Particle.prototype.initialize = function(x, y, dx, dy) {
+            this.position.x = x;
+            this.position.y = y;
+            this.velocity.x = dx;
+            this.velocity.y = dy;
+            this.acceleration.x = dx * -1.3;
+            this.acceleration.y = dy * -1.3;
+            this.age = 0;
+        };
+        
+        Particle.prototype.update = function(deltaTime) {
+            this.position.x += this.velocity.x * deltaTime;
+            this.position.y += this.velocity.y * deltaTime;
+            this.velocity.x += this.acceleration.x * deltaTime;
+            this.velocity.y += this.acceleration.y * deltaTime;
+            this.age += deltaTime;
+        };
+        
+        Particle.prototype.draw = function(context, image) {
+            function ease(t) {
+                return (--t) * t * t + 1;
+            }
+            const size = image.width * ease(this.age / 2);
+            context.globalAlpha = 1 - this.age / 2;
+            context.drawImage(image, this.position.x - size / 2, this.position.y - size / 2, size, size);
+        };
+        
+        function ParticlePool(length) {
+            this.particles = new Array(length);
+            for (let i = 0; i < this.particles.length; i++) {
+                this.particles[i] = new Particle();
+            }
+            this.firstActive = 0;
+            this.firstFree = 0;
+            this.duration = 2;
+        }
+        
+        ParticlePool.prototype.add = function(x, y, dx, dy) {
+            this.particles[this.firstFree].initialize(x, y, dx, dy);
+            this.firstFree++;
+            if (this.firstFree == this.particles.length) this.firstFree = 0;
+            if (this.firstActive == this.firstFree) this.firstActive++;
+            if (this.firstActive == this.particles.length) this.firstActive = 0;
+        };
+        
+        ParticlePool.prototype.update = function(deltaTime) {
+            let i;
+            if (this.firstActive < this.firstFree) {
+                for (i = this.firstActive; i < this.firstFree; i++)
+                    this.particles[i].update(deltaTime);
+            }
+            if (this.firstFree < this.firstActive) {
+                for (i = this.firstActive; i < this.particles.length; i++)
+                    this.particles[i].update(deltaTime);
+                for (i = 0; i < this.firstFree; i++)
+                    this.particles[i].update(deltaTime);
+            }
+            
+            while (this.particles[this.firstActive].age >= this.duration && this.firstActive != this.firstFree) {
+                this.firstActive++;
+                if (this.firstActive == this.particles.length) this.firstActive = 0;
+            }
+        };
+        
+        ParticlePool.prototype.draw = function(context, image) {
+            let i;
+            if (this.firstActive < this.firstFree) {
+                for (i = this.firstActive; i < this.firstFree; i++)
+                    this.particles[i].draw(context, image);
+            }
+            if (this.firstFree < this.firstActive) {
+                for (i = this.firstActive; i < this.particles.length; i++)
+                    this.particles[i].draw(context, image);
+                for (i = 0; i < this.firstFree; i++)
+                    this.particles[i].draw(context, image);
+            }
+        };
+        
+        S.Point = function (args) {
+            this.x = args.x;
+            this.y = args.y;
+            this.z = args.z;
+            this.a = args.a;
+            this.h = args.h;
+        };
+        
+        S.Color = function (r, g, b, a) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = a;
+        };
+        
+        S.Color.prototype = {
+            render: function () {
+                return 'rgba(' + this.r + ',' + +this.g + ',' + this.b + ',' + this.a + ')';
+            }
+        };
+        
+        S.Dot = function (x, y) {
+            this.p = new S.Point({
+                x: x,
+                y: y,
+                z: 8,
+                a: 1,
+                h: 0
+            });
+            this.e = 0.15;
+            this.s = true;
+            this.c = new S.Color(255, 255, 255, this.p.a);
+            this.t = this.clone();
+            this.q = [];
+        };
+        
+        S.Dot.prototype = {
+            clone: function () {
+                return new S.Point({
+                    x: this.x,
+                    y: this.y,
+                    z: this.z,
+                    a: this.a,
+                    h: this.h
+                });
+            },
+            _draw: function () {
+                this.c.a = this.p.a;
+                S.Drawing.drawCircle(this.p, this.c);
+            },
+            _moveTowards: function (n) {
+                var details = this.distanceTo(n, true),
+                    dx = details[0],
+                    dy = details[1],
+                    d = details[2],
+                    e = this.e * d;
+                if (this.p.h === -1) {
+                    this.p.x = n.x;
+                    this.p.y = n.y;
+                    return true;
+                }
+                if (d > 1) {
+                    this.p.x -= ((dx / d) * e);
+                    this.p.y -= ((dy / d) * e);
+                } else {
+                    if (this.p.h > 0) {
+                        this.p.h--;
+                    } else {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            _update: function () {
+                if (this._moveTowards(this.t)) {
+                    var p = this.q.shift();
+                    if (p) {
+                        this.t.x = p.x || this.p.x;
+                        this.t.y = p.y || this.p.y;
+                        this.t.z = p.z || this.p.z;
+                        this.t.a = p.a || this.p.a;
+                        this.p.h = p.h || 0;
+                    } else {
+                        if (this.s) {
+                            this.p.x -= Math.sin(Math.random() * 3.142);
+                            this.p.y -= Math.sin(Math.random() * 3.142);
+                        } else {
+                            this.move(new S.Point({
+                                x: this.p.x + (Math.random() * 50) - 25,
+                                y: this.p.y + (Math.random() * 50) - 25
+                            }));
+                        }
+                    }
+                }
+                d = this.p.a - this.t.a;
+                this.p.a = Math.max(0.1, this.p.a - (d * 0.05));
+                d = this.p.z - this.t.z;
+                this.p.z = Math.max(1, this.p.z - (d * 0.05));
+            },
+            distanceTo: function (n, details) {
+                var dx = this.p.x - n.x,
+                    dy = this.p.y - n.y,
+                    d = Math.sqrt(dx * dx + dy * dy);
+                return details ? [dx, dy, d] : d;
+            },
+            move: function (p, avoidStatic) {
+                if (!avoidStatic || (avoidStatic && this.distanceTo(p) > 1)) {
+                    this.q.push(p);
+                }
+            },
+            render: function () {
+                this._update();
+                this._draw();
+            }
+        };
+        
+        S.ShapeBuilder = (function () {
+            var gap = 8,
+                shapeCanvas = document.createElement('canvas'),
+                shapeContext = shapeCanvas.getContext('2d'),
+                fontSize = 800,
+                fontFamily = 'Arial, sans-serif';
+            function fit() {
+                shapeCanvas.width = Math.floor(window.innerWidth / gap) * gap;
+                shapeCanvas.height = Math.floor(window.innerHeight / gap) * gap;
+                shapeContext.fillStyle = 'red';
+                shapeContext.textBaseline = 'middle';
+                shapeContext.textAlign = 'center';
+            }
+            function processCanvas() {
+                var pixels = shapeContext.getImageData(0, 0, shapeCanvas.width, shapeCanvas.height).data;
+                dots = [],
+                    pixels,
+                    x = 0,
+                    y = 0,
+                    fx = shapeCanvas.width,
+                    fy = shapeCanvas.height,
+                    w = 0,
+                    h = 0;
+                for (var p = 0; p < pixels.length; p += (4 * gap)) {
+                    if (pixels[p + 3] > 0) {
+                        dots.push(new S.Point({
+                            x: x,
+                            y: y
+                        }));
+                        w = x > w ? x : w;
+                        h = y > h ? y : h;
+                        fx = x < fx ? x : fx;
+                        fy = y < fy ? y : fy;
+                    }
+                    x += gap;
+                    if (x >= shapeCanvas.width) {
+                        x = 0;
+                        y += gap;
+                        p += gap * 4 * shapeCanvas.width;
+                    }
+                }
+                return {dots: dots, w: w + fx, h: h + fy};
+            }
+            function setFontSize(s) {
+                shapeContext.font = 'bold ' + s + 'px ' + fontFamily;
+            }
+            function isNumber(n) {
+                return !isNaN(parseFloat(n)) && isFinite(n);
+            }
+            function init() {
+                fit();
+                window.addEventListener('resize', fit);
+            }
+            init();
+            return {
+                imageFile: function (url, callback) {
+                    var image = new Image(),
+                        a = S.Drawing.getArea();
+                    image.onload = function () {
+                        shapeContext.clearRect(0, 0, shapeCanvas.width, shapeCanvas.height);
+                        shapeContext.drawImage(this, 0, 0, a.h * 0.6, a.h * 0.6);
+                        callback(processCanvas());
+                    };
+                    image.onerror = function () {
+                        callback(S.ShapeBuilder.letter('What?'));
+                    };
+                    image.src = url;
+                },
+                circle: function (d) {
+                    var r = Math.max(0, d) / 2;
+                    shapeContext.clearRect(0, 0, shapeCanvas.width, shapeCanvas.height);
+                    shapeContext.beginPath();
+                    shapeContext.arc(r * gap, r * gap, r * gap, 0, 2 * Math.PI, false);
+                    shapeContext.fill();
+                    shapeContext.closePath();
+                    return processCanvas();
+                },
+                letter: function (l, isWish = false) {
+                    var s = 0;
+                    setFontSize(fontSize);
+                    s = Math.min(fontSize,
+                        (shapeCanvas.width / shapeContext.measureText(l).width) * 0.9 * fontSize,
+                        (shapeCanvas.height / fontSize) * (isNumber(l) ? 0.7 : 0.6) * fontSize);
+                    setFontSize(s);
+                    shapeContext.clearRect(0, 0, shapeCanvas.width, shapeCanvas.height);
+                    shapeContext.fillText(l, shapeCanvas.width / 2, shapeCanvas.height / 2);
+                    return processCanvas();
+                },
+                rectangle: function (w, h) {
+                    var dots = [],
+                        width = gap * w,
+                        height = gap * h;
+                    for (var y = 0; y < height; y += gap) {
+                        for (var x = 0; x < width; x += gap) {
+                            dots.push(new S.Point({
+                                x: x,
+                                y: y
+                            }));
+                        }
+                    }
+                    return {dots: dots, w: width, h: height};
+                }
+            };
+        }());
+        
+        S.Shape = (function () {
+            var dots = [],
+                width = 0,
+                height = 0,
+                cx = 0,
+                cy = 0;
+            function compensate() {
+                var a = S.Drawing.getArea();
+                cx = a.w / 2 - width / 2;
+                cy = a.h / 2 - height / 2;
+            }
+            return {
+                shuffleIdle: function () {
+                    var a = S.Drawing.getArea();
+                    for (var d = 0; d < dots.length; d++) {
+                        if (!dots[d].s) {
+                            dots[d].move({
+                                x: Math.random() * a.w,
+                                y: Math.random() * a.h
+                            });
+                        }
+                    }
+                },
+                switchShape: function (n, fast) {
+                    var size,
+                        a = S.Drawing.getArea();
+                    width = n.w;
+                    height = n.h;
+                    compensate();
+                    if (n.dots.length > dots.length) {
+                        size = n.dots.length - dots.length;
+                        for (var d = 1; d <= size; d++) {
+                            dots.push(new S.Dot(a.w / 2, a.h / 2));
+                        }
+                    }
+                    var d = 0,
+                        i = 0;
+                    while (n.dots.length > 0) {
+                        i = Math.floor(Math.random() * n.dots.length);
+                        dots[d].e = fast ? 0.3 : (dots[d].s ? 0.2 : 0.15);
+                        if (dots[d].s) {
+                            dots[d].move(new S.Point({
+                                z: Math.random() * 20 + 10,
+                                a: Math.random(),
+                                h: 15
+                            }));
+                        } else {
+                            dots[d].move(new S.Point({
+                                z: Math.random() * 5 + 5,
+                                h: fast ? 15 : 25
+                            }));
+                        }
+                        dots[d].s = true;
+                        dots[d].move(new S.Point({
+                            x: n.dots[i].x + cx,
+                            y: n.dots[i].y + cy,
+                            a: 1,
+                            z: 5,
+                            h: 0
+                        }));
+                        n.dots = n.dots.slice(0, i).concat(n.dots.slice(i + 1));
+                        d++;
+                    }
+                    for (var i = d; i < dots.length; i++) {
+                        if (dots[i].s) {
+                            dots[i].move(new S.Point({
+                                z: Math.random() * 20 + 10,
+                                a: Math.random(),
+                                h: 30
+                            }));
+                            dots[i].s = false;
+                            dots[i].e = 0.03;
+                            dots[i].move(new S.Point({
+                                x: Math.random() * a.w,
+                                y: Math.random() * a.h,
+                                a: 0.3,
+                                z: Math.random() * 4,
+                                h: 0
+                            }));
+                        }
+                    }
+                },
+                render: function () {
+                    for (var d = 0; d < dots.length; d++) {
+                        dots[d].render();
+                    }
+                },
+                scatterDots: function () {
+                    var a = S.Drawing.getArea();
+                    for (var d = 0; d < dots.length; d++) {
+                        if (dots[d].s) {
+                            dots[d].e = 0.01; // Slower movement for gradual dispersion
+                            dots[d].move(new S.Point({
+                                x: Math.random() * a.w,
+                                y: Math.random() * a.h,
+                                a: 0.1, // Lower opacity for fading effect
+                                z: Math.random() * 2 + 1, // Smaller size
+                                h: Math.random() * 200 + 100 // Longer animation time
+                            }));
+                            dots[d].s = false;
+                        }
+                    }
+                    
+                    // Gradually fade out all dots over time
+                    setTimeout(function() {
+                        for (var d = 0; d < dots.length; d++) {
+                            dots[d].move(new S.Point({
+                                a: 0, // Completely transparent
+                                z: 0, // No size
+                                h: 50
+                            }));
+                        }
+                    }, 3000);
+                },
+                getDots: function () {
+                    return dots;
+                }
+            };
+        }());
+        
+        S.init();
+    </script>
+
+    <script>
+        const canvas = document.getElementById('rainCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const letters = 'HAPPY BIRTHDAY '.split('');
+        const fontSize = 16;
+        let columns = Math.floor(window.innerWidth / fontSize);
+        const drops = Array(columns).fill(1);
+
+        function drawRainBackground() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#f584b7';
+            ctx.font = fontSize + 'px arial';
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height || Math.random() > 0.95) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawRainBackground, 50);
+
+        function createSnowflakes() {
+            const snowflakeContainer = document.getElementById('snowflakes');
+            const snowflakeSymbols = ['❄', '❅', '❆', '✦', '✧', '✩', '✪', '✫'];
+            
+            setInterval(() => {
+                if (snowflakeContainer.children.length < 50) {
+                    const snowflake = document.createElement('div');
+                    snowflake.className = 'snowflake';
+                    snowflake.innerHTML = snowflakeSymbols[Math.floor(Math.random() * snowflakeSymbols.length)];
+                    snowflake.style.left = Math.random() * 100 + 'vw';
+                    snowflake.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                    snowflake.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    snowflake.style.animationDelay = Math.random() * 2 + 's';
+                    snowflake.style.opacity = Math.random() * 0.8 + 0.2;
+                    
+                    snowflakeContainer.appendChild(snowflake);
+                    
+                    setTimeout(() => {
+                        if (snowflake.parentNode) {
+                            snowflake.parentNode.removeChild(snowflake);
+                        }
+                    }, 8000);
+                }
+            }, 300);
+        }
+
+        createSnowflakes();
+        
+        // Music functionality
+        let audio = document.getElementById('backgroundMusic');
+        let musicControl = document.getElementById('musicControl');
+        let tapInstruction = document.getElementById('tapInstruction');
+        let hasUserInteracted = false;
+        
+        // Setup music if available
+        if (customData.music && customData.music.data) {
+            console.log('Music found:', customData.music.name);
+            audio.src = customData.music.data;
+            audio.volume = 0.5;
+            
+            // Show tap instruction
+            tapInstruction.style.display = 'block';
+            
+            // Handle first user interaction
+            function handleFirstInteraction() {
+                if (!hasUserInteracted) {
+                    hasUserInteracted = true;
+                    tapInstruction.style.display = 'none';
+                    
+                    audio.play().then(() => {
+                        console.log('Music started playing');
+                        musicControl.style.display = 'flex';
+                        document.getElementById('musicStatus').textContent = customData.music.name;
+                    }).catch(err => {
+                        console.log('Auto-play prevented:', err);
+                        musicControl.innerHTML = '<i class="fas fa-play"></i> Click to play music';
+                        musicControl.style.display = 'flex';
+                        musicControl.onclick = () => {
+                            audio.play();
+                            musicControl.innerHTML = '<i class="fas fa-music"></i> ' + customData.music.name;
+                            musicControl.onclick = toggleMusic;
+                        };
+                    });
+                }
+            }
+            
+            // Add event listeners for user interaction
+            document.addEventListener('click', handleFirstInteraction, { once: true });
+            document.addEventListener('touchstart', handleFirstInteraction, { once: true });
+            document.addEventListener('keydown', handleFirstInteraction, { once: true });
+            
+            // Music control functionality
+            function toggleMusic() {
+                if (audio.paused) {
+                    audio.play();
+                    document.getElementById('musicStatus').innerHTML = '<i class="fas fa-music"></i> ' + customData.music.name;
+                } else {
+                    audio.pause();
+                    document.getElementById('musicStatus').innerHTML = '<i class="fas fa-pause"></i> Tạm dừng';
+                }
+            }
+            
+            musicControl.onclick = toggleMusic;
+            
+            // Audio event listeners
+            audio.addEventListener('ended', () => {
+                console.log('Music ended, looping...');
+            });
+            
+            audio.addEventListener('error', (e) => {
+                console.error('Audio error:', e);
+                musicControl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Lỗi phát nhạc';
+            });
+        } else {
+            console.log('No music data found');
+        }
+    </script>
+</body>
+</html>

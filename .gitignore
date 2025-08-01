@@ -1,0 +1,34 @@
+# Ignore config files với thông tin nhạy cảm
+config.php
+
+# Ignore uploads folder (chứa file nhạc của user)
+uploads/
+uploads/*
+
+# Ignore test files
+test_db.php
+test_*.php
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore logs
+*.log
+error_log
+
+# Ignore backup files
+*.bak
+*.backup
+*.sql.backup
+
+# Ignore temporary files
+tmp/
+temp/
+*.tmp
