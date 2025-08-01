@@ -3,36 +3,25 @@
 ## 📖 Mô tả
 Hệ thống tạo trang sinh nhật đẹp mắt với hiệu ứng đặc biệt:
 - 🎂 Form tạo trang sinh nhật dễ sử dụng
-- 🎵 Upload nhạc nền (MP3, WAV, OGG)
 - 💝 Lời chúc tùy chỉnh 
 - 🎆 Hiệu ứng pháo hoa và animation
 - 📱 Responsive design cho mọi thiết bị
 - 🔗 Chia sẻ link dễ dàng
+- 💾 Lưu trữ localStorage - không cần server
 
 ## 🚀 Demo
-- [🔗 Live Demo](https://your-domain.com) 
-- [📺 Video Demo](link-video)
+- [🔗 Live Demo](https://phamtheson2807.github.io/hpbd/) 
+- [📺 GitHub Repository](https://github.com/phamtheson2807/hpbd)
 
-## 📁 Phiên bản
-
-### 1️⃣ localStorage Version (index.html + home.html)
+## ✨ Tính năng chính
 - ✅ **Hoàn thành** và sẵn sàng sử dụng
 - 💾 Lưu trữ trên trình duyệt (localStorage)
-- 📏 Giới hạn: 5MB, chỉ xem được trên máy tạo
-- 🎵 Nén nhạc tự động xuống 15-30 giây
-- 🎯 **Phù hợp**: Sử dụng cá nhân, demo nhanh
-
-### 2️⃣ PHP/MySQL Version (Mới phát triển)
-- 🏗️ **Đang phát triển** cho hosting chuyên nghiệp
-- 🗄️ Lưu trữ trên server MySQL
-- ♾️ Không giới hạn dung lượng 
-- 🎵 Upload file nhạc nguyên bản
-- 🌐 Chia sẻ toàn cầu qua URL
-- 🎯 **Phù hợp**: Website thương mại, hosting
+- 📏 Không cần server hay database
+-  **Phù hợp**: Sử dụng cá nhân, demo nhanh, chia sẻ local
 
 ## 🛠️ Cài đặt
 
-### Phiên bản localStorage (Khuyên dùng)
+### Sử dụng ngay
 ```bash
 1. Tải về index.html và home.html
 2. Mở index.html trong trình duyệt
@@ -40,51 +29,43 @@ Hệ thống tạo trang sinh nhật đẹp mắt với hiệu ứng đặc bi�
 4. Chia sẻ link home.html?id=xxx
 ```
 
-### Phiên bản PHP/MySQL (Hosting)
+### Deploy lên GitHub Pages
 ```bash
-1. Upload tất cả files lên hosting
-2. Tạo database MySQL
-3. Import database_hosting.sql
-4. Cấu hình config.php
-5. Truy cập domain.com
+1. Fork repository này
+2. Vào Settings > Pages
+3. Chọn Deploy from branch: main
+4. Truy cập https://username.github.io/hpbd/
 ```
 
 ## ⚙️ Công nghệ
 - **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **Backend**: PHP 7.4+, MySQL 5.7+
-- **Audio**: Web Audio API, AudioContext
-- **Database**: PDO MySQL với prepared statements
-- **Security**: CSRF protection, XSS prevention
+- **Storage**: Browser localStorage API
+- **Animations**: CSS3 transitions và keyframes
+- **Responsive**: CSS Grid và Flexbox
+- **Icons**: Font Awesome 6.5.1
 
 ## 📋 Files
 
 ### Core Files
-- `index.html` - Trang tạo sinh nhật (localStorage)
-- `home.html` - Trang hiển thị sinh nhật (localStorage)  
-- `home.php` - Trang hiển thị sinh nhật (PHP version)
+- `index.html` - Trang tạo sinh nhật 
+- `home.html` - Trang hiển thị sinh nhật
+- `README.md` - Hướng dẫn sử dụng
 
-### PHP Backend  
-- `config.php` - Cấu hình database
-- `save_birthday.php` - API lưu dữ liệu
-- `get_birthday.php` - API lấy dữ liệu
-- `database_hosting.sql` - Cấu trúc database
+### Extra Files  
+- `h.html`, `tym.html` - Demo pages bổ sung
 
-### Config Files
-- `.htaccess` - URL rewrite và security
-- `README.md` - Hướng dẫn này
+## � Tính năng hiển thị
+- Gradient backgrounds đẹp mắt
+- Hiệu ứng pháo hoa khi load
+- Animation floating cho elements
+- Form validation real-time
+- Responsive cho mọi màn hình
 
-## 🎵 Tính năng âm thanh
-- Hỗ trợ: MP3, WAV, OGG
-- localStorage: Tự động nén 15-30s, 8kHz mono
-- PHP: Lưu file gốc, tối đa 10MB
-- Chạm để phát nhạc (Web Audio API)
-
-## 🔒 Bảo mật
-- ✅ SQL Injection protection (PDO)
-- ✅ XSS prevention 
-- ✅ File upload validation
-- ✅ CSRF protection
-- ✅ Directory traversal protection
+## � Lưu trữ localStorage
+- Tự động lưu lời chúc khi nhập
+- Tạo ID ngẫu nhiên 6 ký tự
+- Xóa dữ liệu tùy chọn
+- Không cần database hay server
 
 ## 📱 Responsive
 - 📱 Mobile: < 768px
@@ -101,9 +82,8 @@ Hệ thống tạo trang sinh nhật đẹp mắt với hiệu ứng đặc bi�
 MIT License - Sử dụng tự do cho mọi mục đích
 
 ## 👨‍💻 Tác giả
-- **GitHub**: [your-username]
-- **Email**: your-email@domain.com
-- **Website**: [your-website.com]
+- **GitHub**: [phamtheson2807](https://github.com/phamtheson2807)
+- **Repository**: [hpbd](https://github.com/phamtheson2807/hpbd)
 
 ---
 ⭐ **Star repo này nếu hữu ích!** ⭐
