@@ -7,7 +7,7 @@ Hệ thống tạo trang sinh nhật đẹp mắt với hiệu ứng đặc bi�
 - 🎆 Hiệu ứng pháo hoa và animation
 - 📱 Responsive design cho mọi thiết bị
 - 🔗 Chia sẻ link dễ dàng
-- 💾 Lưu trữ localStorage - không cần server
+- 💾 Lưu trữ Supabase theo ID, mở được trên nhiều thiết bị
 
 ## 🚀 Demo
 - [🔗 Live Demo](https://phamtheson2807.github.io/hpbd/) 
@@ -15,9 +15,9 @@ Hệ thống tạo trang sinh nhật đẹp mắt với hiệu ứng đặc bi�
 
 ## ✨ Tính năng chính
 - ✅ **Hoàn thành** và sẵn sàng sử dụng
-- 💾 Lưu trữ trên trình duyệt (localStorage)
-- 📏 Không cần server hay database
--  **Phù hợp**: Sử dụng cá nhân, demo nhanh, chia sẻ local
+- 💾 Lưu trữ trên Supabase, có bản sao localStorage dự phòng
+- 🔗 Liên kết chia sẻ hoạt động trên nhiều thiết bị
+- **Phù hợp**: Tạo và chia sẻ trang sinh nhật
 
 ## 🛠️ Cài đặt
 
@@ -61,11 +61,12 @@ Hệ thống tạo trang sinh nhật đẹp mắt với hiệu ứng đặc bi�
 - Form validation real-time
 - Responsive cho mọi màn hình
 
-## � Lưu trữ localStorage
+## 💾 Lưu trữ theo ID
+- Chạy nội dung `supabase-schema.sql` một lần trong Supabase SQL Editor
 - Tự động lưu lời chúc khi nhập
 - Tạo ID ngẫu nhiên 6 ký tự
-- Xóa dữ liệu tùy chọn
-- Không cần database hay server
+- Dữ liệu được lưu trong bảng `public.birthdays`
+- `localStorage` được giữ làm bản sao dự phòng trên thiết bị tạo
 
 ## 📱 Responsive
 - 📱 Mobile: < 768px
