@@ -2,17 +2,60 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Happy Birthday</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --pink: #ff76b7;
+            --rose: #ff4f91;
+            --lavender: #a985ff;
+            --gold: #ffd88a;
+            --ink: #10051f;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         html, body {
             margin: 0;
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
-            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at 18% 18%, rgba(255, 105, 180, .32), transparent 32%),
+                radial-gradient(circle at 82% 22%, rgba(166, 126, 255, .3), transparent 35%),
+                radial-gradient(circle at 50% 88%, rgba(255, 196, 120, .18), transparent 36%),
+                linear-gradient(135deg, #090316 0%, #1b0733 42%, #310d45 70%, #110522 100%);
+            background-size: 140% 140%;
+            animation: gradientAnimation 18s ease-in-out infinite;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            inset: -25%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            background:
+                radial-gradient(circle, rgba(255,255,255,.9) 0 1px, transparent 2px) 0 0 / 44px 44px,
+                radial-gradient(circle, rgba(255,216,138,.75) 0 1px, transparent 2px) 20px 12px / 72px 72px;
+            opacity: .33;
+            animation: starDrift 24s linear infinite;
+        }
+
+        body::after {
+            background: conic-gradient(from 90deg at 50% 50%, transparent, rgba(255,118,183,.14), transparent 28%, rgba(169,133,255,.12), transparent 62%);
+            filter: blur(70px);
+            animation: auraSpin 20s linear infinite;
         }
 
         body.body--ready {
@@ -58,6 +101,7 @@
             z-index: 1;
             width: 100%;
             height: 100%;
+            filter: drop-shadow(0 0 8px rgba(255, 143, 200, .5));
         }
         
         .text {
@@ -80,13 +124,14 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.08));
+            backdrop-filter: blur(18px) saturate(150%);
             border-radius: 50px;
             padding: 10px 15px;
             color: white;
             font-size: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.32);
+            box-shadow: 0 12px 35px rgba(9, 3, 22, .28), inset 0 1px rgba(255,255,255,.28);
             z-index: 1000;
             display: none;
             align-items: center;
@@ -109,15 +154,18 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
+            background: linear-gradient(135deg, rgba(35,10,54,.88), rgba(83,20,74,.82));
+            backdrop-filter: blur(20px);
             color: white;
             padding: 20px 30px;
-            border-radius: 15px;
+            border-radius: 22px;
             font-size: 18px;
             text-align: center;
             z-index: 1001;
             animation: pulse 2s infinite;
             display: none;
+            border: 1px solid rgba(255,255,255,.22);
+            box-shadow: 0 20px 70px rgba(0,0,0,.38), 0 0 35px rgba(255,118,183,.2);
         }
         
         @keyframes pulse {
@@ -126,11 +174,16 @@
         }
 
         @keyframes gradientAnimation {
-            0% { background-position: 0% 0%; }
-            25% { background-position: 100% 0%; }
-            50% { background-position: 100% 100%; }
-            75% { background-position: 0% 100%; }
-            100% { background-position: 0% 0%; }
+            0%, 100% { background-position: 0% 20%; }
+            50% { background-position: 100% 80%; }
+        }
+
+        @keyframes starDrift {
+            to { transform: translate3d(80px, -70px, 0); }
+        }
+
+        @keyframes auraSpin {
+            to { transform: rotate(360deg) scale(1.08); }
         }
 
         @keyframes snowfall {
@@ -173,10 +226,11 @@
 
         .snowflake {
             position: absolute;
-            color: rgba(255, 105, 180, 0.8);
+            color: rgba(255, 222, 241, 0.9);
             font-size: 1em;
             animation: snowfall linear infinite;
-            text-shadow: 0 0 10px rgba(255, 105, 180, 0.8);
+            text-shadow: 0 0 8px rgba(255, 118, 183, .95), 0 0 22px rgba(169, 133, 255, .6);
+            filter: drop-shadow(0 0 5px rgba(255,255,255,.55));
         }
 
         @keyframes floatUp {
@@ -211,16 +265,38 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: #FF1493;
-            font-size: 24px;
-            font-weight: bold;
+            color: #fff7fc;
+            font-size: clamp(22px, 4vw, 36px);
+            font-weight: 700;
             text-align: center;
             z-index: 6;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(255,20,147,0.5);
-            font-family: Arial, sans-serif;
-            max-width: 300px;
-            line-height: 1.4;
+            text-shadow: 0 2px 8px rgba(0,0,0,.45), 0 0 18px rgba(255,118,183,.75);
+            font-family: 'Dancing Script', cursive;
+            max-width: min(82vw, 720px);
+            line-height: 1.35;
             transition: opacity 0.5s ease-in-out;
+        }
+
+        @media (max-width: 600px) {
+            .music-control {
+                top: max(12px, env(safe-area-inset-top));
+                right: 12px;
+                max-width: calc(100vw - 24px);
+                font-size: 12px;
+            }
+
+            .tap-instruction {
+                width: min(86vw, 340px);
+                padding: 18px 22px;
+                font-size: 16px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html, body, body::before, body::after, .snowflake, .tap-instruction {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+            }
         }
     </style>
 </head>
@@ -545,15 +621,15 @@
             wishText.style.top = '50%';
             wishText.style.left = '50%';
             wishText.style.transform = 'translate(-50%, -50%)';
-            wishText.style.color = '#FF1493';
-            wishText.style.fontSize = '24px';
+            wishText.style.color = '#fff7fc';
+            wishText.style.fontSize = 'clamp(22px, 4vw, 36px)';
             wishText.style.fontWeight = 'bold';
             wishText.style.textAlign = 'center';
             wishText.style.zIndex = '6';
-            wishText.style.textShadow = '2px 2px 4px rgba(0,0,0,0.8)';
-            wishText.style.fontFamily = 'Arial, sans-serif';
-            wishText.style.maxWidth = '300px';
-            wishText.style.lineHeight = '1.4';
+            wishText.style.textShadow = '0 2px 8px rgba(0,0,0,.45), 0 0 18px rgba(255,118,183,.75)';
+            wishText.style.fontFamily = "'Dancing Script', cursive";
+            wishText.style.maxWidth = 'min(82vw, 720px)';
+            wishText.style.lineHeight = '1.35';
             document.body.appendChild(wishText);
             
             const context = heartCanvas.getContext('2d');
@@ -870,7 +946,7 @@
                 shapeCanvas = document.createElement('canvas'),
                 shapeContext = shapeCanvas.getContext('2d'),
                 fontSize = 800,
-                fontFamily = 'Arial, sans-serif';
+                fontFamily = '"Be Vietnam Pro", sans-serif';
             function fit() {
                 shapeCanvas.width = Math.floor(window.innerWidth / gap) * gap;
                 shapeCanvas.height = Math.floor(window.innerHeight / gap) * gap;
@@ -1110,10 +1186,12 @@
         const drops = Array(columns).fill(1);
 
         function drawRainBackground() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillStyle = 'rgba(10, 3, 25, 0.055)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#f584b7';
-            ctx.font = fontSize + 'px arial';
+            ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,118,183,.7)' : 'rgba(169,133,255,.65)';
+            ctx.shadowColor = 'rgba(255,118,183,.65)';
+            ctx.shadowBlur = 8;
+            ctx.font = '600 ' + fontSize + 'px "Be Vietnam Pro", sans-serif';
             for (let i = 0; i < drops.length; i++) {
                 const text = letters[Math.floor(Math.random() * letters.length)];
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
