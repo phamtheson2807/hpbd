@@ -246,52 +246,69 @@
     <!-- Floating Elements -->
     <div class="snowflakes" id="snowflakes"></div>
 
+    <script src="supabase.js"></script>
     <script language="javascript">
-        // Get data from localStorage or URL parameters
+        // Get data from Supabase by ID, with localStorage as an offline fallback.
         const urlParams = new URLSearchParams(window.location.search);
         const shortId = urlParams.get('id');
-        
-        let customData;
-        
-        if (shortId) {
-            const storedData = localStorage.getItem(`birthday_${shortId}`);
-            console.log('ShortId:', shortId);
-            console.log('Stored data:', storedData);
-            if (storedData) {
-                const parsedData = JSON.parse(storedData);
-                console.log('Parsed data:', parsedData);
-                customData = {
-                    name: parsedData.name || 'Sơn 🌷',
-                    age: parsedData.age || '22',
-                    date: parsedData.date || '28.07.03',
-                    title: parsedData.title || 'Chúc mừng sinh nhật',
-                    wishes: parsedData.wishes || [],
-                    music: parsedData.music || null
-                };
-                console.log('Final customData:', customData);
-            } else {
-                console.log('No stored data found for shortId:', shortId);
-                customData = {
-                    name: 'Sơn 🌷',
-                    age: '22',
-                    date: '28.07.03',
-                    title: 'Chúc mừng sinh nhật',
-                    wishes: [],
-                    music: null
-                };
-            }
-        } else {
-            customData = {
-                name: urlParams.get('name') || 'Sơn 🌷',
-                age: urlParams.get('age') || '22',
-                date: urlParams.get('date') || '28.07.03',
-                title: urlParams.get('title') || 'Chúc mừng sinh nhật',
-                wishes: urlParams.get('wishes') ? JSON.parse(urlParams.get('wishes')) : [],
-                music: null
+
+        const defaultData = {
+            name: 'Sơn 🌷',
+            age: '22',
+            date: '28.07.03',
+            title: 'Chúc mừng sinh nhật',
+            wishes: [],
+            music: null
+        };
+
+        let customData = { ...defaultData };
+
+        function normalizeBirthday(data) {
+            return {
+                name: data.name || defaultData.name,
+                age: data.age || defaultData.age,
+                date: data.date || defaultData.date,
+                title: data.title || defaultData.title,
+                wishes: Array.isArray(data.wishes) ? data.wishes : [],
+                music: data.music || null
             };
         }
 
-        document.title = customData.title;
+        async function loadBirthdayData() {
+            if (!shortId) {
+                customData = normalizeBirthday({
+                    name: urlParams.get('name'),
+                    age: urlParams.get('age'),
+                    date: urlParams.get('date'),
+                    title: urlParams.get('title'),
+                    wishes: urlParams.get('wishes')
+                        ? JSON.parse(urlParams.get('wishes'))
+                        : []
+                });
+                document.title = customData.title;
+                return;
+            }
+
+            try {
+                const remoteData = await getBirthday(shortId);
+                if (remoteData) {
+                    customData = normalizeBirthday(remoteData);
+                    localStorage.setItem(`birthday_${shortId}`, JSON.stringify(remoteData));
+                    document.title = customData.title;
+                    return;
+                }
+            } catch (error) {
+                console.error('Supabase load error:', error);
+            }
+
+            const storedData = localStorage.getItem(`birthday_${shortId}`);
+            if (storedData) {
+                customData = normalizeBirthday(JSON.parse(storedData));
+            }
+            document.title = customData.title;
+        }
+
+        const birthdayDataReady = loadBirthdayData();
 
         function show_date_time() {
             window.setTimeout("show_date_time()", 1000);
@@ -1073,7 +1090,7 @@
             };
         }());
         
-        S.init();
+        birthdayDataReady.finally(() => S.init());
     </script>
 
     <script>
@@ -1141,7 +1158,8 @@
         let tapInstruction = document.getElementById('tapInstruction');
         let hasUserInteracted = false;
         
-        // Setup music if available
+        // Setup music after the birthday data has finished loading.
+        birthdayDataReady.finally(() => {
         if (customData.music && customData.music.data) {
             console.log('Music found:', customData.music.name);
             audio.src = customData.music.data;
@@ -1203,6 +1221,7 @@
         } else {
             console.log('No music data found');
         }
+        });
     </script>
 </body>
 </html>
