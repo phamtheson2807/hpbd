@@ -277,6 +277,63 @@
             transition: opacity 0.5s ease-in-out;
         }
 
+        .rotate-device {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            place-items: center;
+            padding: 28px;
+            color: #fff;
+            text-align: center;
+            background:
+                radial-gradient(circle at 50% 35%, rgba(255,118,183,.3), transparent 32%),
+                linear-gradient(145deg, #10051f, #351047);
+        }
+
+        .rotate-device__card {
+            width: min(86vw, 360px);
+            padding: 30px 24px;
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 26px;
+            background: rgba(255,255,255,.1);
+            box-shadow: 0 24px 70px rgba(0,0,0,.35);
+            backdrop-filter: blur(18px);
+        }
+
+        .rotate-device__phone {
+            width: 54px;
+            height: 88px;
+            margin: 0 auto 22px;
+            border: 4px solid #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(255,118,183,.65);
+            animation: rotatePhone 1.8s ease-in-out infinite;
+        }
+
+        .rotate-device h2 {
+            margin: 0 0 10px;
+            font-size: 21px;
+        }
+
+        .rotate-device p {
+            margin: 0;
+            color: rgba(255,255,255,.78);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        @keyframes rotatePhone {
+            0%, 20% { transform: rotate(0); }
+            70%, 100% { transform: rotate(90deg); }
+        }
+
+        @media (max-width: 900px) and (orientation: portrait) and (pointer: coarse) {
+            .rotate-device {
+                display: grid;
+            }
+        }
+
         @media (max-width: 600px) {
             .music-control {
                 top: max(12px, env(safe-area-inset-top));
@@ -302,6 +359,14 @@
 </head>
 
 <body>
+    <div class="rotate-device" aria-live="polite">
+        <div class="rotate-device__card">
+            <div class="rotate-device__phone" aria-hidden="true"></div>
+            <h2>Hãy xoay ngang điện thoại</h2>
+            <p>Trang sinh nhật được thiết kế theo khung hình ngang để hiệu ứng hiển thị đẹp nhất.</p>
+        </div>
+    </div>
+
     <canvas id="rainCanvas"></canvas>
     
     <!-- Audio Element -->
@@ -386,6 +451,23 @@
 
         const birthdayDataReady = loadBirthdayData();
 
+        function waitForLandscape() {
+            const portraitPhone = window.matchMedia('(max-width: 900px) and (orientation: portrait) and (pointer: coarse)');
+            if (!portraitPhone.matches) return Promise.resolve();
+
+            return new Promise(resolve => {
+                const handleChange = event => {
+                    if (!event.matches) {
+                        portraitPhone.removeEventListener('change', handleChange);
+                        resolve();
+                    }
+                };
+                portraitPhone.addEventListener('change', handleChange);
+            });
+        }
+
+        const landscapeReady = waitForLandscape();
+
         function show_date_time() {
             window.setTimeout("show_date_time()", 1000);
             BirthDay = new Date("04/03/2024 08:30:00");
@@ -414,7 +496,7 @@
                 S.Drawing.init();
                 document.body.classList.add('body--ready');
                 
-                let sequence = `|#countdown 3|HAPPY BIRTHDAY|${customData.name.toUpperCase()}|${customData.date}|HAPPY ${customData.age}+`;
+                let sequence = `|#countdown 3|${customData.title}|${customData.name}|${customData.date}|Tuổi ${customData.age}`;
                 
                 customData.wishes.forEach(wish => {
                     sequence += `|${wish}`;
@@ -487,6 +569,13 @@
                 sequence = [],
                 cmd = '#',
                 isSequenceComplete = false;
+            function finishSequence() {
+                if (isSequenceComplete) return;
+                isSequenceComplete = true;
+                setTimeout(function () {
+                    S.Shape.switchShape(S.ShapeBuilder.cake(), false);
+                }, 1800);
+            }
             function formatTime(date) {
                 var h = date.getHours(),
                     m = date.getMinutes(),
@@ -512,13 +601,7 @@
                             clearInterval(interval);
                             // Check if sequence is complete
                             if (sequence.length === 0 && !isSequenceComplete) {
-                                isSequenceComplete = true;
-                                setTimeout(function() {
-                                    S.Shape.scatterDots();
-                                    setTimeout(function() {
-                                        startHeartAnimation();
-                                    }, 1500);
-                                }, 2000);
+                                finishSequence();
                             }
                         }
                     }, delay);
@@ -584,13 +667,7 @@
                 // Check if this was the last item and trigger final animation
                 setTimeout(function() {
                     if (sequence.length === 0 && !isSequenceComplete) {
-                        isSequenceComplete = true;
-                        setTimeout(function() {
-                            S.Shape.scatterDots();
-                            setTimeout(function() {
-                                startHeartAnimation();
-                            }, 1500); // Shorter delay for heart animation
-                        }, 2000); // Shorter delay before scattering
+                        finishSequence();
                     }
                 }, 3500 * sequence.length + 2000); // Reduced delay
             }
@@ -1018,12 +1095,55 @@
                     shapeContext.closePath();
                     return processCanvas();
                 },
+                cake: function () {
+                    var w = shapeCanvas.width,
+                        h = shapeCanvas.height,
+                        cakeWidth = Math.min(w * 0.34, h * 0.72),
+                        cakeHeight = cakeWidth * 0.48,
+                        x = (w - cakeWidth) / 2,
+                        y = (h - cakeHeight) / 2 + h * 0.08,
+                        layerHeight = cakeHeight / 3;
+
+                    shapeContext.clearRect(0, 0, w, h);
+                    shapeContext.fillStyle = '#ff5ca4';
+
+                    // Ba tầng bánh bo tròn.
+                    shapeContext.beginPath();
+                    shapeContext.roundRect(x, y, cakeWidth, layerHeight, 18);
+                    shapeContext.roundRect(x + cakeWidth * .08, y - layerHeight * .8, cakeWidth * .84, layerHeight, 16);
+                    shapeContext.roundRect(x + cakeWidth * .2, y - layerHeight * 1.55, cakeWidth * .6, layerHeight, 14);
+                    shapeContext.fill();
+
+                    // Lớp kem nhỏ giọt.
+                    for (var i = 0; i < 7; i++) {
+                        shapeContext.beginPath();
+                        shapeContext.arc(x + cakeWidth * (.12 + i * .125), y + 5, 10, 0, Math.PI * 2);
+                        shapeContext.fill();
+                    }
+
+                    // Nến và ngọn lửa.
+                    var candleX = w / 2,
+                        candleY = y - layerHeight * 1.55;
+                    shapeContext.fillRect(candleX - 6, candleY - 48, 12, 46);
+                    shapeContext.beginPath();
+                    shapeContext.moveTo(candleX, candleY - 76);
+                    shapeContext.quadraticCurveTo(candleX + 20, candleY - 56, candleX, candleY - 46);
+                    shapeContext.quadraticCurveTo(candleX - 20, candleY - 56, candleX, candleY - 76);
+                    shapeContext.fill();
+
+                    // Đĩa bánh.
+                    shapeContext.beginPath();
+                    shapeContext.roundRect(x - cakeWidth * .08, y + layerHeight + 12, cakeWidth * 1.16, 14, 8);
+                    shapeContext.fill();
+
+                    return processCanvas();
+                },
                 letter: function (l, isWish = false) {
                     var s = 0;
                     setFontSize(fontSize);
                     s = Math.min(fontSize,
-                        (shapeCanvas.width / shapeContext.measureText(l).width) * 0.9 * fontSize,
-                        (shapeCanvas.height / fontSize) * (isNumber(l) ? 0.7 : 0.6) * fontSize);
+                        (shapeCanvas.width / shapeContext.measureText(l).width) * 0.64 * fontSize,
+                        (shapeCanvas.height / fontSize) * (isNumber(l) ? 0.52 : (isWish ? 0.4 : 0.44)) * fontSize);
                     setFontSize(s);
                     shapeContext.clearRect(0, 0, shapeCanvas.width, shapeCanvas.height);
                     shapeContext.fillText(l, shapeCanvas.width / 2, shapeCanvas.height / 2);
@@ -1166,7 +1286,7 @@
             };
         }());
         
-        birthdayDataReady.finally(() => S.init());
+        Promise.all([birthdayDataReady, landscapeReady]).finally(() => S.init());
     </script>
 
     <script>
