@@ -300,6 +300,7 @@
             <div id="result-content"></div>
         </div>
     </div>
+    <script src="supabase.js"></script>
     <script>
         // Khôi phục lời chúc từ localStorage hoặc bắt đầu với danh sách trống
         let wishes = JSON.parse(localStorage.getItem('current_wishes')) || [];
@@ -345,8 +346,9 @@
         }
         renderWishes();
         // Form submit
-        document.getElementById('birthdayForm').addEventListener('submit', function(e) {
+        document.getElementById('birthdayForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            const submitButton = this.querySelector('.submit-btn');
             const name = document.getElementById('name').value.trim();
             const age = document.getElementById('age').value.trim();
             const date = document.getElementById('date').value.trim();
@@ -379,23 +381,49 @@
                 return;
             }
             
-            // Tạo shortId
-            const shortId = generateShortId();
-            // Lưu vào localStorage đúng cấu trúc home.html
             const data = { name, age, date, title, wishes: wishesFiltered };
             console.log('Data to save:', data);
+
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu dữ liệu...';
+
+            let shortId;
+            let savedRemotely = false;
+            try {
+                for (let attempt = 0; attempt < 5; attempt++) {
+                    shortId = generateShortId();
+                    try {
+                        await saveBirthday(shortId, data);
+                        savedRemotely = true;
+                        break;
+                    } catch (error) {
+                        if (error.status === 409 && attempt < 4) {
+                            continue;
+                        }
+                        throw error;
+                    }
+                }
+            } catch (error) {
+                console.error('Supabase save error:', error);
+                shortId = shortId || generateShortId();
+                alert(`Chưa thể lưu lên Supabase (${error.message}). Trang vẫn được lưu tạm trên thiết bị này.`);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-magic"></i> Tạo Trang Sinh Nhật';
+            }
+
+            // Giữ bản sao trên thiết bị hiện tại để có thể mở khi mất mạng.
             localStorage.setItem(`birthday_${shortId}`, JSON.stringify(data));
-            
-            // Test đọc lại để đảm bảo đã lưu đúng
-            const savedData = JSON.parse(localStorage.getItem(`birthday_${shortId}`));
-            console.log('Saved data verification:', savedData);
             
             // Xóa lời chúc tạm thời sau khi tạo thành công
             localStorage.removeItem('current_wishes');
             
             // Tạo link
             const url = `${window.location.origin}${window.location.pathname.replace('/index.html','')}/home.html?id=${shortId}`;
-            document.getElementById('result-content').innerHTML = `<b>🎉 Link trang sinh nhật đã được tạo:</b><br><br><a href='${url}' target='_blank'>${url}</a><br><br><small>ID: ${shortId}</small>`;
+            const storageNote = savedRemotely
+                ? 'Đã lưu trực tuyến – có thể mở trên mọi thiết bị.'
+                : 'Đang lưu tạm trên thiết bị này – cần thiết lập bảng Supabase để chia sẻ.';
+            document.getElementById('result-content').innerHTML = `<b>🎉 Link trang sinh nhật đã được tạo:</b><br><br><a href='${url}' target='_blank'>${url}</a><br><br><small>ID: ${shortId}<br>${storageNote}</small>`;
             document.getElementById('result').style.display = 'block';
             document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
         });
@@ -410,7 +438,7 @@
         
         function clearAllData() {
             if (confirm('Bạn có chắc muốn xóa tất cả dữ liệu (bao gồm lời chúc và các trang sinh nhật đã tạo)?')) {
-                // Xóa tất cả dữ liệu birthday
+                // Chỉ xóa dữ liệu tạm và bản sao trên thiết bị hiện tại.
                 Object.keys(localStorage).forEach(key => {
                     if (key.startsWith('birthday_') || key === 'current_wishes') {
                         localStorage.removeItem(key);
